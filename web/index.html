@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="admin">
+  <meta name="google-signin-client_id" content="120756374004-pvpeokabjnkbd69uf22a5v710oj5qpbo.apps.googleusercontent.com">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>GdriveCMS</title>
+  <link rel="manifest" href="manifest.json">
+  <!-- Styling for loading indicator -->
+  <style>
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #212332;
+    }
+
+    .indicator {
+      width: 10vw;
+    }
+  </style>
+
+</head>
+
+<body style="overflow: hidden">
+  <!-- Loading -->
+  <div id="loading_container" class="container">
+    <img src="./assets/loading.gif" alt="loading indicator" class="indicator">
+  </div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('flutter-first-frame', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+  <script src="main.dart.js" type="application/javascript"></script>
+  <script>
+    window.onload = function () {
+      setTimeout(function () {
+        var loadingIndicator = document.getElementById("loading_container");
+        if (loadingIndicator) {
+          loadingIndicator.remove();
+        }
+      }, 10000)
+    }
+  </script>
+</body>
+
+</html>

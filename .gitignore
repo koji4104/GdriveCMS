@@ -46,7 +46,6 @@ app.*.map.json
 /android/app/release
 
 # Add
-/web/
 /android/.gradle
 /android/.idea
 /ios/Pods/
