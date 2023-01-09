@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:data_table_2/data_table_2.dart';
-
+import 'package:intl/intl.dart';
 import '/constants.dart';
 
 import 'components/storage_capacity.dart';
@@ -27,7 +27,7 @@ class DashboardScreen extends ConsumerWidget {
     ref.watch(menuProvider);
 
     return SafeArea(child:
-    SingleChildScrollView(padding: EdgeInsets.all(8), child:
+    SingleChildScrollView(padding: EdgeInsets.all(10), child:
     Column(children: [
       topButtons(),
       Row(
@@ -65,13 +65,13 @@ class DashboardScreen extends ConsumerWidget {
   Widget fileList() {
     TextStyle ts = TextStyle(color:Theme.of(context).textTheme.bodyMedium!.color);
     return DataTable2(
-        columnSpacing: defaultPadding,
+        columnSpacing: 8,
         minWidth: 400,
         headingTextStyle:Theme.of(context).textTheme.bodyMedium,
         dataTextStyle:Theme.of(context).textTheme.bodyMedium,
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
         ),
         columns: [
           DataColumn(label: Text("Name")),
@@ -86,13 +86,15 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   DataRow getRow(ContentData cont) {
-    TextStyle ts = TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color);
-    Icon icon = Icon(Icons.text_snippet, size: 30, color: Theme.of(context).canvasColor);
+    TextStyle ts = Theme.of(context).textTheme.bodyMedium!;
+    Color? col = Theme.of(context).textTheme.bodyMedium!.color;
+    Icon icon = Icon(Icons.text_snippet, size: 30, color: col);
+    String sTime = cont.createdTime!=null ? DateFormat('yyyy/MM/dd').format(cont.createdTime!) : '';
     if (cont.mimeType != null) {
       if (cont.mimeType!.contains('video'))
-        icon = Icon(Icons.videocam, size: 30, color: Theme.of(context).canvasColor);
+        icon = Icon(Icons.videocam, size: 30, color: col);
       else if (cont.mimeType!.contains('image'))
-      icon = Icon(Icons.image, size: 30, color: Theme.of(context).canvasColor);
+      icon = Icon(Icons.image, size: 30, color: col);
     }
     return DataRow(
       color: MaterialStateProperty.resolveWith((states) {
@@ -108,8 +110,8 @@ class DashboardScreen extends ConsumerWidget {
             ),
           ],),
         ),
-        DataCell(Text(cont.createdTime!.toString(), style: ts)),
-        DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB', style: ts)),
+        DataCell(Text(sTime)),
+        DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB')),
       ],);
   }
 }

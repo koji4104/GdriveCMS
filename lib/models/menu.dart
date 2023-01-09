@@ -9,6 +9,6 @@ class MenuData {
   bool isDark = true;
 
   /// 0=Dashboard, 1=Content
-  int screenType = 1;
+  int screenType = 0;
 
 }

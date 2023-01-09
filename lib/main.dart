@@ -18,7 +18,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       routes: {},
       debugShowCheckedModeBanner: false,
-      title: 'Flutter',
+      title: 'GdriveCMS',
       theme: isDark ? myDarkTheme : myLightTheme,
       home: MainScreen(),
     );

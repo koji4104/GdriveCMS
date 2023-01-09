@@ -24,10 +24,11 @@ class ContentScreen extends ConsumerWidget {
         .watch(gdriveProvider)
         .files;
     ref.watch(menuProvider);
+    ref.watch(contentProvider);
 
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(10),
         child: Column(children: [
           topButtons(),
           fileList(),
@@ -52,7 +53,13 @@ class ContentScreen extends ConsumerWidget {
 
   Widget fileList() {
     return DataTable2(
-        columnSpacing: defaultPadding,
+        //dataRowColor: MaterialStateProperty.resolveWith((states) {
+        //  if (states.contains(MaterialState.selected)) { //選択されている時の条件分岐
+        //    return Colors.green;
+        //  }
+       // }),
+        showCheckboxColumn:false,
+        columnSpacing: 8,
         minWidth: 600,
         headingTextStyle:Theme.of(context).textTheme.bodyMedium,
         dataTextStyle:Theme.of(context).textTheme.bodyMedium,
@@ -61,7 +68,7 @@ class ContentScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         columns: [
-          DataColumn(label: Text("Icon")),
+          //DataColumn(label: Text("Icon")),
           DataColumn(label: Text("Name")),
           DataColumn(label: Text("Date")),
           DataColumn(label: Text("Size")),
@@ -90,11 +97,24 @@ class ContentScreen extends ConsumerWidget {
 
     return DataRow(
         color: MaterialStateProperty.resolveWith((states) {
-          return Theme.of(context).cardColor;
+          if (states.contains(MaterialState.selected)) { //選択されている時の条件分岐
+            return Theme.of(context).selectedRowColor;
+          }
         }),
+        onSelectChanged:(_){
+          ref.read(contentProvider).select(cont);
+        },
+        selected:ref.watch(contentProvider).contains(cont),
         cells: [
-          DataCell(icon),
-          DataCell(Text(cont.name.toString())),
+          //DataCell(icon),
+          //DataCell(Text(cont.name.toString())),
+          DataCell(
+            Row(children: [
+              icon,
+              SizedBox(width: 4),
+              Text(cont.name),
+            ],),
+          ),
           DataCell(Text(sTime)),
           DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB')),
           DataCell(Text(cont.parent ?? '')),

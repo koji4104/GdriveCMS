@@ -53,7 +53,7 @@ class StorageCapacity extends ConsumerWidget {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.all(Radius.circular(6)),
+        borderRadius: const BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,11 +61,11 @@ class StorageCapacity extends ConsumerWidget {
           Text(
             "Storage Capacity",
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: defaultPadding),
+          SizedBox(height: 8),
           Chart(
               value1: videoBytes,
               value2: imageBytes,
@@ -120,13 +120,13 @@ class StorageCapacityCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(menuProvider);
     return Container(
-      margin: EdgeInsets.only(top: defaultPadding),
+      margin: EdgeInsets.only(top: 6),
       padding: EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        border: Border.all(width: 1, color: Colors.black),
+        border: Border.all(width: 1, color: Theme.of(context).backgroundColor),
         borderRadius: const BorderRadius.all(
-          Radius.circular(6),
+          Radius.circular(DEFAULT_RADIUS),
         ),
       ),
       child: Row(
@@ -136,9 +136,10 @@ class StorageCapacityCard extends ConsumerWidget {
             width: 20,
             child: Icon(iconData),
           ),
+          SizedBox(width:4),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -148,7 +149,7 @@ class StorageCapacityCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   ProgressLine(
-                    color: Colors.green,
+                    color: Theme.of(context).iconTheme.color,
                     percentage: 25,
                   ),
                   Row(children: [
@@ -158,7 +159,7 @@ class StorageCapacityCard extends ConsumerWidget {
                           .of(context)
                           .textTheme
                           .caption!
-                          .copyWith(color: Colors.white70),
+                          .copyWith(color: Theme.of(context).iconTheme.color),
                     ),
                     SizedBox(width: 10,),
                     Text(
@@ -167,7 +168,7 @@ class StorageCapacityCard extends ConsumerWidget {
                           .of(context)
                           .textTheme
                           .caption!
-                          .copyWith(color: Colors.white),
+                          .copyWith(color: Theme.of(context).iconTheme.color),
                     ),
                   ]),
                 ],
@@ -271,28 +272,31 @@ class ProgressLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 5,
-          decoration: BoxDecoration(
-            color: color!.withOpacity(0.1),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+    return Container(
+        margin: EdgeInsets.only(top: 4, bottom: 4),
+        child: Stack(children: [
+          Container(
+            width: double.infinity,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Theme
+                  .of(context)
+                  .backgroundColor,
+              borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
+            ),
           ),
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) =>
-              Container(
-                width: constraints.maxWidth * (percentage! / 100),
-                height: 5,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+          LayoutBuilder(
+            builder: (context, constraints) =>
+                Container(
+                  width: constraints.maxWidth * (percentage! / 100),
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
+                  ),
                 ),
-              ),
-        ),
-      ],
-    );
+          ),
+        ],
+        ));
   }
 }

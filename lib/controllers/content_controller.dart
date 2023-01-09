@@ -64,3 +64,23 @@ class GdriveNotifier extends ChangeNotifier {
   }
 }
 
+final contentProvider = ChangeNotifierProvider((ref) => ContentNotifier(ref));
+class ContentNotifier extends ChangeNotifier {
+  List<ContentData> selected = [];
+
+  ContentNotifier(ref){
+  }
+
+  select(ContentData d) {
+    if(selected.contains(d)) {
+      selected.remove(d);
+    } else {
+      selected.add(d);
+    }
+    this.notifyListeners();
+  }
+
+  bool contains(ContentData d) {
+    return selected.contains(d);
+  }
+}

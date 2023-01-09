@@ -28,6 +28,8 @@ class MainScreen extends ConsumerWidget {
         key: ref
             .read(menuProvider)
             .scaffoldKey,
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor,
+        drawerScrimColor:Theme.of(context).primaryColor,
         drawer: SideBar(),
         body: SafeArea(child:
         Responsive.isMobile(context) == true ?
@@ -54,12 +56,12 @@ class MainScreen extends ConsumerWidget {
 
   Widget headerMenu(BuildContext context, WidgetRef ref) {
     return Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).primaryColor,
         child: Row(children: [
           if (Responsive.isMobile(context) == true)
             IconButton(
                 iconSize: 32,
-                icon: Icon(Icons.menu, size: 32, color: Theme.of(context).canvasColor),
+                icon: Icon(Icons.menu, size: 32, color: Theme.of(context).iconTheme.color),
                 onPressed: () {
                   ref
                       .read(menuProvider)
@@ -157,8 +159,9 @@ class SideBar extends ConsumerWidget {
 
     return Container(
         width: _type == 2 ? 180 : 50,
-        color: Theme.of(context).cardColor,
+        color: Theme.of(context).primaryColor,
         child: Drawer(
+          backgroundColor: Theme.of(context).primaryColor,
           child: ListView(
             children: [
               if(_type != 0)
@@ -167,8 +170,8 @@ class SideBar extends ConsumerWidget {
                   onTap: () {
                     ref.read(menuProvider).switchSideMenu();
                   },
-                  leading: Icon(Icons.menu, size: this.IconSize, color: Theme.of(context).backgroundColor),
-                  tileColor: Theme.of(context).backgroundColor,
+                  leading: Icon(Icons.menu, size: this.IconSize, color: Theme.of(context).iconTheme.color),
+                  tileColor: Theme.of(context).primaryColor,
                   title: null,
                 ),
               MyListTile(
@@ -177,7 +180,7 @@ class SideBar extends ConsumerWidget {
                 screenType: 0,
               ),
               MyListTile(
-                title: "Logs",
+                title: "Contents",
                 icondata: Icons.article,
                 screenType: 1,
               ),
@@ -205,7 +208,7 @@ class SideBar extends ConsumerWidget {
       contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       leading: icon,
       title: _type == 2 ? text : null,
-      tileColor: Theme.of(context).backgroundColor,
+      tileColor: Theme.of(context).primaryColor,
       onTap: () {
           this.ref
               .read(menuProvider).setScreenType(screenType);
