@@ -5,12 +5,13 @@ import '/models/content.dart';
 import 'package:googleapis/drive/v3.dart' as ga;
 
 final gdriveProvider = ChangeNotifierProvider((ref) => GdriveNotifier(ref));
+
 class GdriveNotifier extends ChangeNotifier {
   GoogleDriveAdapter gdrive = GoogleDriveAdapter();
   List<ContentData> files = [];
 
-  GdriveNotifier(ref){
-    gdrive.loginSilently().then((r){
+  GdriveNotifier(ref) {
+    gdrive.loginSilently().then((r) {
       this.notifyListeners();
     });
   }
@@ -30,7 +31,7 @@ class GdriveNotifier extends ChangeNotifier {
         d.webViewLink = f.webViewLink;
         d.kind = f.kind;
         d.folderColorRgb = f.folderColorRgb;
-        if(f.parents!=null && f.parents!.length>0) {
+        if (f.parents != null && f.parents!.length > 0) {
           String parentid = f.parents![0];
           d.parent = await gdrive.getFolderNameFromId(parentid);
         }
@@ -38,6 +39,10 @@ class GdriveNotifier extends ChangeNotifier {
       }
     }
     this.notifyListeners();
+
+    await gdrive.getSettingsId();
+    print('-- settingsId=${gdrive.settingsId}');
+
     return files;
   }
 
@@ -59,20 +64,20 @@ class GdriveNotifier extends ChangeNotifier {
     });
   }
 
-  String getAccountName(){
+  String getAccountName() {
     return gdrive.getAccountName();
   }
 }
 
 final contentProvider = ChangeNotifierProvider((ref) => ContentNotifier(ref));
+
 class ContentNotifier extends ChangeNotifier {
   List<ContentData> selected = [];
 
-  ContentNotifier(ref){
-  }
+  ContentNotifier(ref) {}
 
   select(ContentData d) {
-    if(selected.contains(d)) {
+    if (selected.contains(d)) {
       selected.remove(d);
     } else {
       selected.add(d);

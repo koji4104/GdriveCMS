@@ -20,35 +20,32 @@ class ContentScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     this.ref = ref;
     this.context = context;
-    this.files = ref
-        .watch(gdriveProvider)
-        .files;
+    this.files = ref.watch(gdriveProvider).files;
     ref.watch(menuProvider);
     ref.watch(contentProvider);
 
     return SafeArea(
       child: SingleChildScrollView(
         padding: EdgeInsets.all(10),
-        child: Column(children: [
-          topButtons(),
-          fileList(),
-        ],),
+        child: Column(
+          children: [
+            topButtons(),
+            fileList(),
+          ],
+        ),
       ),
     );
   }
 
   Widget topButtons() {
-    return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          IconButton(
-              icon: Icon(Icons.autorenew),
-              iconSize: 30.0,
-              onPressed: () async {
-                ref.read(gdriveProvider).getFiles();
-              }
-          ),
-        ]);
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      IconButton(
+          icon: Icon(Icons.autorenew),
+          iconSize: 30.0,
+          onPressed: () async {
+            ref.read(gdriveProvider).getFiles();
+          }),
+    ]);
   }
 
   Widget fileList() {
@@ -57,12 +54,12 @@ class ContentScreen extends ConsumerWidget {
         //  if (states.contains(MaterialState.selected)) { //選択されている時の条件分岐
         //    return Colors.green;
         //  }
-       // }),
-        showCheckboxColumn:false,
+        // }),
+        showCheckboxColumn: false,
         columnSpacing: 8,
         minWidth: 600,
-        headingTextStyle:Theme.of(context).textTheme.bodyMedium,
-        dataTextStyle:Theme.of(context).textTheme.bodyMedium,
+        headingTextStyle: Theme.of(context).textTheme.bodyMedium,
+        dataTextStyle: Theme.of(context).textTheme.bodyMedium,
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(8),
@@ -77,9 +74,8 @@ class ContentScreen extends ConsumerWidget {
         ],
         rows: List.generate(
           files.length,
-              (index) => getRow(files[index]),
-        )
-    );
+          (index) => getRow(files[index]),
+        ));
   }
 
   DataRow getRow(ContentData cont) {
@@ -92,50 +88,56 @@ class ContentScreen extends ConsumerWidget {
         idata = Icons.image;
       else if (m.contains('folder')) idata = Icons.folder;
     }
-    Widget icon = Icon(idata, size: 30, color:Theme.of(context).textTheme.bodyMedium!.color);
+    Widget icon = Icon(idata, size: 30, color: Theme.of(context).textTheme.bodyMedium!.color);
     String sTime = DateFormat('yyyy/MM/dd').format(cont.createdTime!);
 
     return DataRow(
-        color: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) { //選択されている時の条件分岐
+      color: MaterialStateProperty.resolveWith(
+        (states) {
+          if (states.contains(MaterialState.selected)) {
             return Theme.of(context).selectedRowColor;
           }
-        }),
-        onSelectChanged:(_){
-          ref.read(contentProvider).select(cont);
         },
-        selected:ref.watch(contentProvider).contains(cont),
-        cells: [
-          //DataCell(icon),
-          //DataCell(Text(cont.name.toString())),
-          DataCell(
-            Row(children: [
+      ),
+      onSelectChanged: (_) {
+        ref.read(contentProvider).select(cont);
+      },
+      selected: ref.watch(contentProvider).contains(cont),
+      cells: [
+        DataCell(
+          Row(
+            children: [
               icon,
               SizedBox(width: 4),
-              Text(cont.name),
-            ],),
+              Expanded(child: Text(cont.name, overflow: TextOverflow.ellipsis)),
+            ],
           ),
-          DataCell(Text(sTime)),
-          DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB')),
-          DataCell(Text(cont.parent ?? '')),
-          DataCell(
-            MyIconButton(
-                icon: Icon(Icons.play_circle_fill, color: null, size: 30),
-                onPressed: () {
-                  if (cont.webViewLink != null)
-                    launchUrl(
-                        Uri.parse(cont.webViewLink!));
-                }),
-          )
-        ]);
+        ),
+        DataCell(Text(sTime)),
+        DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB')),
+        DataCell(Text(cont.parent ?? '')),
+        DataCell(
+          MyIconButton(
+              icon: Icon(Icons.play_circle_fill, color: null, size: 30),
+              onPressed: () {
+                if (cont.webViewLink != null) launchUrl(Uri.parse(cont.webViewLink!));
+              }),
+        )
+      ],
+    );
   }
 
-  Widget MyIconButton({required Icon icon, required void Function()? onPressed,
-    double? left, double? top, double? right, double? bottom, double? iconSize}) {
+  Widget MyIconButton(
+      {required Icon icon,
+      required void Function()? onPressed,
+      double? left,
+      double? top,
+      double? right,
+      double? bottom,
+      double? iconSize}) {
     Color fgcol = Colors.white;
     Color bgcol = Colors.black54;
-    if (iconSize == null)
-      iconSize = 38.0;
+    if (iconSize == null) iconSize = 38.0;
     return IconButton(
       icon: icon,
       color: fgcol,

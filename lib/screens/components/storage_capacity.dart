@@ -18,9 +18,7 @@ class StorageCapacity extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    files = ref
-        .watch(gdriveProvider)
-        .files;
+    files = ref.watch(gdriveProvider).files;
     ref.watch(menuProvider);
 
     double videoBytes = 0;
@@ -66,12 +64,7 @@ class StorageCapacity extends ConsumerWidget {
             ),
           ),
           SizedBox(height: 8),
-          Chart(
-              value1: videoBytes,
-              value2: imageBytes,
-              value3: otherBytes,
-              total: 1024 * 1024 * 1024
-          ),
+          Chart(value1: videoBytes, value2: imageBytes, value3: otherBytes, total: 1024 * 1024 * 1024),
           StorageCapacityCard(
             iconData: Icons.videocam,
             title: "Videos",
@@ -136,7 +129,7 @@ class StorageCapacityCard extends ConsumerWidget {
             width: 20,
             child: Icon(iconData),
           ),
-          SizedBox(width:4),
+          SizedBox(width: 4),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -155,20 +148,14 @@ class StorageCapacityCard extends ConsumerWidget {
                   Row(children: [
                     Text(
                       "$numOfFiles Files",
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .caption!
-                          .copyWith(color: Theme.of(context).iconTheme.color),
+                      style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).iconTheme.color),
                     ),
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text(
                       (bytes / 1024 / 1024).toInt().toString() + ' MB',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .caption!
-                          .copyWith(color: Theme.of(context).iconTheme.color),
+                      style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).iconTheme.color),
                     ),
                   ]),
                 ],
@@ -218,9 +205,7 @@ class Chart extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                    '${((value1 + value2 + value3) / 1024 / 1024).toInt()} MB'
-                ),
+                Text('${((value1 + value2 + value3) / 1024 / 1024).toInt()} MB'),
                 Text('of ${(total / 1024 / 1024).toInt()} MB')
               ],
             ),
@@ -233,7 +218,7 @@ class Chart extends StatelessWidget {
   List<PieChartSectionData> paiChartSelectionDatas() {
     return [
       PieChartSectionData(
-        color: Color(0xFF880000),
+        color: Color(0xFF888888),
         value: value1,
         showTitle: false,
         radius: 12,
@@ -273,30 +258,29 @@ class ProgressLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 4, bottom: 4),
-        child: Stack(children: [
+      margin: EdgeInsets.only(top: 4, bottom: 4),
+      child: Stack(
+        children: [
           Container(
             width: double.infinity,
             height: 5,
             decoration: BoxDecoration(
-              color: Theme
-                  .of(context)
-                  .backgroundColor,
+              color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
             ),
           ),
           LayoutBuilder(
-            builder: (context, constraints) =>
-                Container(
-                  width: constraints.maxWidth * (percentage! / 100),
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
-                  ),
-                ),
+            builder: (context, constraints) => Container(
+              width: constraints.maxWidth * (percentage! / 100),
+              height: 5,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
+              ),
+            ),
           ),
         ],
-        ));
+      ),
+    );
   }
 }
