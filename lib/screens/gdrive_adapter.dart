@@ -7,6 +7,7 @@ import 'package:http/io_client.dart';
 import 'package:googleapis/drive/v3.dart' as ga;
 import 'package:path/path.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';
@@ -30,37 +31,40 @@ class GoogleHttpClient extends BrowserClient {
   Map<String, String> _headers;
   GoogleHttpClient(this._headers) : super();
   @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) =>
-      super.send(request..headers.addAll(_headers));
+  Future<http.StreamedResponse> send(http.BaseRequest request) => super.send(request..headers.addAll(_headers));
   @override
   Future<http.Response> head(Object url, {Map<String, String>? headers}) =>
       super.head(url as Uri, headers: headers!..addAll(_headers));
 }
 
 class GoogleDriveAdapter {
-  GoogleDriveAdapter(){}
+  GoogleDriveAdapter() {}
 
-  GoogleSignIn googleSignIn = GoogleSignIn(
-    scopes:[ga.DriveApi.driveScope]
-  );
+  GoogleSignIn googleSignIn = GoogleSignIn(scopes: [ga.DriveApi.driveScope]);
 
   final storage = new FlutterSecureStorage();
   GoogleSignInAccount? gsa;
-  bool isSignedIn(){ return gsa!=null; }
+  bool isSignedIn() {
+    return gsa != null;
+  }
+
   bool isInitialized = false;
   String errmsg = '';
 
   ga.FileList? gfilelist = null;
 
   // top folder of this project
-  String topFolderName = 'Test';
-  String? topFolderId;
+  String gcmsFolderName = 'gcms';
+  String? gcmsFolderId;
+
+  String settingsName = 'settings.json';
+  String? settingsId;
 
   /// displayName
-  String getAccountName(){
+  String getAccountName() {
     String r = 'None';
-    if(gsa!=null){
-      if(gsa!.displayName!=null) {
+    if (gsa != null) {
+      if (gsa!.displayName != null) {
         r = '${gsa!.displayName!}\n${gsa!.email}';
       } else {
         r = '${gsa!.email}';
@@ -73,11 +77,11 @@ class GoogleDriveAdapter {
   Future<bool> loginSilently() async {
     gsa = null;
     errmsg = '';
-    try{
-      if (await storage.read(key:'signedIn')=='true') {
+    try {
+      if (await storage.read(key: 'signedIn') == 'true') {
         gsa = await googleSignIn.signInSilently();
-        if(gsa==null){
-          storage.write(key:'signedIn',value:'false');
+        if (gsa == null) {
+          storage.write(key: 'signedIn', value: 'false');
         }
       }
     } on Exception catch (e) {
@@ -85,8 +89,8 @@ class GoogleDriveAdapter {
       errmsg = e.toString();
     }
     isInitialized = true;
-    print('-- loginSilently() is ${gsa!=null}');
-    return gsa!=null;
+    print('-- loginSilently() is ${gsa != null}');
+    return gsa != null;
   }
 
   // New account or Existing account
@@ -94,23 +98,23 @@ class GoogleDriveAdapter {
   Future<bool> loginWithGoogle() async {
     print('-- loginWithGoogle()');
     errmsg = '';
-    try{
+    try {
       gsa = await googleSignIn.signIn();
-      if(gsa!=null) {
-        storage.write(key:'signedIn',value:'true');
+      if (gsa != null) {
+        storage.write(key: 'signedIn', value: 'true');
       }
     } on Exception catch (e) {
       print('-- err loginWithGoogle() ${e.toString()}');
       errmsg = e.toString();
     }
-    print('-- loginWithGoogle() is ${gsa!=null}');
-    return gsa!=null;
+    print('-- loginWithGoogle() is ${gsa != null}');
+    return gsa != null;
   }
 
   Future logout() async {
     print('-- logout');
     await googleSignIn.signOut();
-    await storage.write(key:'signedIn',value:'false');
+    await storage.write(key: 'signedIn', value: 'false');
     gsa = null;
   }
 
@@ -119,13 +123,12 @@ class GoogleDriveAdapter {
     var client = GoogleHttpClient(await gsa!.authHeaders);
     var drive = ga.DriveApi(client);
     try {
-      if(topFolderId == folderId)
-        return topFolderName;
+      if (gcmsFolderId == folderId) return gcmsFolderName;
 
       String q = "mimeType='application/vnd.google-apps.folder'";
       q += " and trashed=False";
-      q += " and '${topFolderId}' in parents";
-      ga.FileList folders = await drive.files.list(q:q);
+      q += " and '${gcmsFolderId}' in parents";
+      ga.FileList folders = await drive.files.list(q: q);
 
       if (folders.files != null) {
         for (ga.File f in folders.files!) {
@@ -146,17 +149,17 @@ class GoogleDriveAdapter {
     var drive = ga.DriveApi(client);
     try {
       // top folder id
-      if (topFolderId == null) {
+      if (gcmsFolderId == null) {
         String q = "mimeType='application/vnd.google-apps.folder'";
-        q += " and name='${topFolderName}'";
+        q += " and name='${gcmsFolderName}'";
         q += " and trashed=False";
         q += " and 'root' in parents";
-        ga.FileList folders = await drive.files.list(q:q);
+        ga.FileList folders = await drive.files.list(q: q);
 
         if (folders.files != null) {
           for (ga.File f in folders.files!) {
-            if (f.name == topFolderName) {
-              topFolderId = f.id ?? null;
+            if (f.name == gcmsFolderName) {
+              gcmsFolderId = f.id ?? null;
             }
           }
         }
@@ -168,28 +171,28 @@ class GoogleDriveAdapter {
 
   Future<void> getFiles() async {
     print('-- getFiles');
-    if(isSignedIn()==false) {
+    if (isSignedIn() == false) {
       print('-- not SignedIn');
       return;
     }
 
     var client = GoogleHttpClient(await gsa!.authHeaders);
     var drive = ga.DriveApi(client);
-    try{
+    try {
       // top folder id
-      if(topFolderId==null) {
+      if (gcmsFolderId == null) {
         await getTopFolderId();
       }
-      if(topFolderId!=null) {
+      if (gcmsFolderId != null) {
         // File list
         //String q = 'mimeType=="application/vnd.google-apps.folder"';
-        String q = '';
+        String q = "";
         q += "trashed=False";
-        q += ' and "${topFolderId}" in parents';
+        q += " and '${gcmsFolderId}' in parents";
         gfilelist = await drive.files.list(
-          q:q,
-          $fields:'*',
-          orderBy:'name',
+          q: q,
+          $fields: '*',
+          orderBy: 'name',
         );
         print('gfilelist.length=${gfilelist!.files!.length}');
       }
@@ -200,13 +203,13 @@ class GoogleDriveAdapter {
 
   Future<void> uploadFile(String path) async {
     print('-- GoogleDriveAdapter.uploadFile');
-    if(isSignedIn()==false) {
+    if (isSignedIn() == false) {
       print('-- not SignedIn');
       return;
     }
-    if(topFolderId==null) {
+    if (gcmsFolderId == null) {
       await getTopFolderId();
-      if(topFolderId==null) {
+      if (gcmsFolderId == null) {
         print('-- not folderId');
         return;
       }
@@ -218,17 +221,15 @@ class GoogleDriveAdapter {
     File file = File(path);
     request.name = basename(path);
     request.parents = [];
-    request.parents!.add(topFolderId!);
+    request.parents!.add(gcmsFolderId!);
 
-    var res = await drive.files.create(
-        request,
-        uploadMedia:ga.Media(file.openRead(),file.lengthSync()));
+    var res = await drive.files.create(request, uploadMedia: ga.Media(file.openRead(), file.lengthSync()));
     print(res);
   }
 
   /// fileId = gfilelist!.files![n].id
   Future<void> deleteFile(String fileId) async {
-    if(isSignedIn()==false) {
+    if (isSignedIn() == false) {
       print('-- not SignedIn');
       return;
     }
@@ -237,5 +238,78 @@ class GoogleDriveAdapter {
 
     drive.files.delete(fileId);
     gfilelist!.files!.removeAt(0);
+  }
+
+  Future<void> getSettingsId() async {
+    var client = GoogleHttpClient(await gsa!.authHeaders);
+    var drive = ga.DriveApi(client);
+    try {
+      print('-- getSettingsId()');
+      if (settingsId == null) {
+        String q = "";
+        q += "trashed=False";
+        q += " and '${gcmsFolderId}' in parents";
+        ga.FileList folders = await drive.files.list(q: q);
+
+        print('-- len=${folders.files!.length} id=${gcmsFolderId}');
+        if (folders.files != null) {
+          for (ga.File f in folders.files!) {
+            if (f.name == settingsName) {
+              settingsId = f.id ?? null;
+            }
+          }
+        }
+        if (settingsId == null) {
+          print('-- getConfigFileId() create');
+          String conf = '{"aaa":"bbb"}';
+          Uint8List bytes = Uint8List.fromList(conf.codeUnits);
+
+          var request = new ga.File();
+          request.name = settingsName;
+          request.parents = [];
+          request.parents!.add(gcmsFolderId!);
+
+          ga.Media fileMedia =
+              ga.Media(http.ByteStream.fromBytes(bytes), bytes.length, contentType: 'application/json');
+
+          var res = await drive.files.create(request, uploadMedia: fileMedia);
+
+          print('-- getConfigFileId() ${res}');
+        }
+      }
+    } on Exception catch (e) {
+      print('-- err getConfigFileId=${e.toString()}');
+    }
+  }
+
+  Future<void> updateSettings() async {
+    print('-- GoogleDriveAdapter.updateConfigFile()');
+    if (isSignedIn() == false) {
+      print('-- not SignedIn');
+      return;
+    }
+    if (settingsId == null) {
+      await getSettingsId();
+      if (settingsId == null) {
+        print('-- not gcmsConfigFileId');
+        return;
+      }
+    }
+    var client = GoogleHttpClient(await gsa!.authHeaders);
+    var drive = ga.DriveApi(client);
+
+    String conf = '{"aaa":"bbb"}';
+    Uint8List bytes = Uint8List.fromList(conf.codeUnits);
+
+    var request = new ga.File();
+    request.name = settingsName;
+    request.parents = [];
+    request.parents!.add(gcmsFolderId!);
+
+    ga.Media fileMedia = ga.Media(http.ByteStream.fromBytes(bytes), bytes.length, contentType: 'application/json');
+
+    var res = await drive.files.update(request, settingsId!, uploadMedia: fileMedia);
+
+    print(res);
   }
 }
