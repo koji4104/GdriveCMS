@@ -30,15 +30,9 @@ class DashboardScreen extends ConsumerWidget {
         child: Column(children: [
           topButtons(),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Expanded(
-              flex: 2,
-              child: fileList(),
-            ),
+            Expanded(flex: 2, child: fileList()),
             SizedBox(width: 10),
-            Expanded(
-              flex: 1,
-              child: StorageCapacity(),
-            ),
+            Expanded(flex: 1, child: StorageCapacity()),
           ])
         ]),
       ),
@@ -49,7 +43,7 @@ class DashboardScreen extends ConsumerWidget {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       IconButton(
         icon: Icon(Icons.autorenew),
-        iconSize: 30.0,
+        iconSize: 24.0,
         onPressed: () async {
           ref.read(gdriveProvider).getFiles();
         },

@@ -30,7 +30,11 @@ class ContentScreen extends ConsumerWidget {
         child: Column(
           children: [
             topButtons(),
-            fileList(),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Expanded(flex: 2, child: fileList()),
+              SizedBox(width: 10),
+              Expanded(flex: 1, child: propertyList()),
+            ])
           ],
         ),
       ),
@@ -38,44 +42,42 @@ class ContentScreen extends ConsumerWidget {
   }
 
   Widget topButtons() {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      IconButton(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        IconButton(
           icon: Icon(Icons.autorenew),
-          iconSize: 30.0,
+          iconSize: 24.0,
           onPressed: () async {
             ref.read(gdriveProvider).getFiles();
-          }),
-    ]);
+          },
+        ),
+      ],
+    );
   }
 
   Widget fileList() {
     return DataTable2(
-        //dataRowColor: MaterialStateProperty.resolveWith((states) {
-        //  if (states.contains(MaterialState.selected)) { //選択されている時の条件分岐
-        //    return Colors.green;
-        //  }
-        // }),
-        showCheckboxColumn: false,
-        columnSpacing: 8,
-        minWidth: 600,
-        headingTextStyle: Theme.of(context).textTheme.bodyMedium,
-        dataTextStyle: Theme.of(context).textTheme.bodyMedium,
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        columns: [
-          //DataColumn(label: Text("Icon")),
-          DataColumn(label: Text("Name")),
-          DataColumn(label: Text("Date")),
-          DataColumn(label: Text("Size")),
-          DataColumn(label: Text("Parent")),
-          DataColumn(label: Text("View")),
-        ],
-        rows: List.generate(
-          files.length,
-          (index) => getRow(files[index]),
-        ));
+      showCheckboxColumn: false,
+      columnSpacing: 8,
+      minWidth: 100,
+      headingTextStyle: Theme.of(context).textTheme.bodyMedium,
+      dataTextStyle: Theme.of(context).textTheme.bodyMedium,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+      ),
+      columns: [
+        DataColumn(label: Text("Name")),
+        DataColumn(label: Text("Date")),
+        DataColumn(label: Text("Size")),
+        DataColumn(label: Text("View")),
+      ],
+      rows: List.generate(
+        files.length,
+        (index) => getRow(files[index]),
+      ),
+    );
   }
 
   DataRow getRow(ContentData cont) {
@@ -88,7 +90,7 @@ class ContentScreen extends ConsumerWidget {
         idata = Icons.image;
       else if (m.contains('folder')) idata = Icons.folder;
     }
-    Widget icon = Icon(idata, size: 30, color: Theme.of(context).textTheme.bodyMedium!.color);
+    Widget icon = Icon(idata, size: 24, color: Theme.of(context).textTheme.bodyMedium!.color);
     String sTime = DateFormat('yyyy/MM/dd').format(cont.createdTime!);
 
     return DataRow(
@@ -108,22 +110,52 @@ class ContentScreen extends ConsumerWidget {
           Row(
             children: [
               icon,
-              SizedBox(width: 4),
+              SizedBox(width: 6),
               Expanded(child: Text(cont.name, overflow: TextOverflow.ellipsis)),
             ],
           ),
         ),
         DataCell(Text(sTime)),
         DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB')),
-        DataCell(Text(cont.parent ?? '')),
         DataCell(
           MyIconButton(
-              icon: Icon(Icons.play_circle_fill, color: null, size: 30),
-              onPressed: () {
-                if (cont.webViewLink != null) launchUrl(Uri.parse(cont.webViewLink!));
-              }),
+            icon: Icon(Icons.play_circle_fill, color: null, size: 24),
+            onPressed: () {
+              if (cont.webViewLink != null) launchUrl(Uri.parse(cont.webViewLink!));
+            },
+          ),
         )
       ],
+    );
+  }
+
+  Widget propertyList() {
+    List<DataRow> rows = [];
+    if (ref.watch(contentProvider).selected != null) {
+      ContentData sel = ref.watch(contentProvider).selected!;
+      rows = [
+        DataRow(cells: [DataCell(Text('name')), DataCell(Text(sel.name))]),
+        DataRow(cells: [DataCell(Text('mimeType')), DataCell(Text(sel.mimeType!))]),
+        DataRow(cells: [DataCell(Text('kind')), DataCell(Text(sel.kind!))]),
+        DataRow(cells: [DataCell(Text('parent')), DataCell(Text(sel.parent!))]),
+      ];
+    }
+
+    return DataTable2(
+      showCheckboxColumn: false,
+      columnSpacing: 8,
+      minWidth: 100,
+      headingTextStyle: Theme.of(context).textTheme.bodyMedium,
+      dataTextStyle: Theme.of(context).textTheme.bodyMedium,
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+      ),
+      columns: [
+        DataColumn(label: Text("Key")),
+        DataColumn(label: Text("Value")),
+      ],
+      rows: rows,
     );
   }
 
@@ -137,7 +169,7 @@ class ContentScreen extends ConsumerWidget {
       double? iconSize}) {
     Color fgcol = Colors.white;
     Color bgcol = Colors.black54;
-    if (iconSize == null) iconSize = 38.0;
+    if (iconSize == null) iconSize = 24.0;
     return IconButton(
       icon: icon,
       color: fgcol,

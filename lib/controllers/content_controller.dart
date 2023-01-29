@@ -72,20 +72,33 @@ class GdriveNotifier extends ChangeNotifier {
 final contentProvider = ChangeNotifierProvider((ref) => ContentNotifier(ref));
 
 class ContentNotifier extends ChangeNotifier {
-  List<ContentData> selected = [];
+  List<ContentData> selectedList = [];
+  ContentData? selected;
 
   ContentNotifier(ref) {}
 
   select(ContentData d) {
-    if (selected.contains(d)) {
-      selected.remove(d);
+    selected = d;
+    this.notifyListeners();
+  }
+
+  bool isSelected(ContentData d) {
+    if (selected == null)
+      return false;
+    else
+      return selected!.id == d.id;
+  }
+
+  multiSelect(ContentData d) {
+    if (selectedList.contains(d)) {
+      selectedList.remove(d);
     } else {
-      selected.add(d);
+      selectedList.add(d);
     }
     this.notifyListeners();
   }
 
   bool contains(ContentData d) {
-    return selected.contains(d);
+    return selectedList.contains(d);
   }
 }
