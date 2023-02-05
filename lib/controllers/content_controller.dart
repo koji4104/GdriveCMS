@@ -40,8 +40,8 @@ class GdriveNotifier extends ChangeNotifier {
     }
     this.notifyListeners();
 
-    await gdrive.getSettingsId();
-    print('-- settingsId=${gdrive.settingsId}');
+    await gdrive.getSettingsFileId();
+    print('-- settingsId=${gdrive.settingsFileId}');
 
     return files;
   }

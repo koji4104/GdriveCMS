@@ -50,7 +50,7 @@ class StorageCapacity extends ConsumerWidget {
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: myTheme.cardColor,
         borderRadius: const BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
       ),
       child: Column(
@@ -116,8 +116,8 @@ class StorageCapacityCard extends ConsumerWidget {
       margin: EdgeInsets.only(top: 6),
       padding: EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        border: Border.all(width: 1, color: Theme.of(context).backgroundColor),
+        color: myTheme.cardColor,
+        border: Border.all(width: 1, color: myTheme.backgroundColor),
         borderRadius: const BorderRadius.all(
           Radius.circular(DEFAULT_RADIUS),
         ),
@@ -142,20 +142,20 @@ class StorageCapacityCard extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   ProgressLine(
-                    color: Theme.of(context).iconTheme.color,
+                    color: myTheme.iconTheme.color,
                     percentage: 25,
                   ),
                   Row(children: [
                     Text(
                       "$numOfFiles Files",
-                      style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).iconTheme.color),
+                      style: myTheme.textTheme.caption!.copyWith(color: myTheme.iconTheme.color),
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
                       (bytes / 1024 / 1024).toInt().toString() + ' MB',
-                      style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).iconTheme.color),
+                      style: myTheme.textTheme.caption!.copyWith(color: myTheme.iconTheme.color),
                     ),
                   ]),
                 ],
@@ -265,7 +265,7 @@ class ProgressLine extends StatelessWidget {
             width: double.infinity,
             height: 5,
             decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: myTheme.backgroundColor,
               borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
             ),
           ),

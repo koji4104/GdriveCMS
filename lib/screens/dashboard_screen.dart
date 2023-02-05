@@ -52,7 +52,7 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   Widget fileList() {
-    TextStyle ts = TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color);
+    TextStyle ts = TextStyle(color: myTheme.textTheme.bodyMedium!.color);
     List<ContentData> recents = files;
 
     recents.sort((a, b) {
@@ -65,10 +65,10 @@ class DashboardScreen extends ConsumerWidget {
     return DataTable2(
       columnSpacing: 8,
       minWidth: 400,
-      headingTextStyle: Theme.of(context).textTheme.bodyMedium,
-      dataTextStyle: Theme.of(context).textTheme.bodyMedium,
+      headingTextStyle: myTheme.textTheme.bodyMedium,
+      dataTextStyle: myTheme.textTheme.bodyMedium,
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: myTheme.cardColor,
         borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
       ),
       columns: [
@@ -84,8 +84,8 @@ class DashboardScreen extends ConsumerWidget {
   }
 
   DataRow getRow(ContentData cont) {
-    TextStyle ts = Theme.of(context).textTheme.bodyMedium!;
-    Color? col = Theme.of(context).textTheme.bodyMedium!.color;
+    TextStyle ts = myTheme.textTheme.bodyMedium!;
+    Color? col = myTheme.textTheme.bodyMedium!.color;
     Icon icon = Icon(Icons.text_snippet, size: 30, color: col);
     String sTime = cont.createdTime != null ? DateFormat('yyyy/MM/dd').format(cont.createdTime!) : '';
     if (cont.mimeType != null) {
@@ -95,7 +95,7 @@ class DashboardScreen extends ConsumerWidget {
     }
     return DataRow(
       color: MaterialStateProperty.resolveWith((states) {
-        return Theme.of(context).canvasColor;
+        return myTheme.canvasColor;
       }),
       cells: [
         DataCell(

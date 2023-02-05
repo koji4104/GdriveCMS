@@ -7,7 +7,7 @@ import '/controllers/menu_controller.dart';
 import '/models/menu.dart';
 import '/controllers/content_controller.dart';
 import 'content_screen.dart';
-import 'gdrive_adapter.dart';
+import '/constants.dart';
 
 class MainScreen extends ConsumerWidget {
   late WidgetRef ref;
@@ -17,83 +17,63 @@ class MainScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     this.ref = ref;
     this.context = context;
-    int screenType = ref
-        .watch(menuProvider)
-        .data
-        .screenType;
+    int screenType = ref.watch(menuProvider).data.screenType;
     ref.watch(menuProvider);
 
-    return
-      Scaffold(
-        key: ref
-            .read(menuProvider)
-            .scaffoldKey,
-        backgroundColor:Theme.of(context).scaffoldBackgroundColor,
-        drawerScrimColor:Theme.of(context).primaryColor,
-        drawer: SideBar(),
-        body: SafeArea(child:
-        Responsive.isMobile(context) == true ?
-        Column(children: [
-          headerMenu(context, ref),
-          Expanded(child: getScreen(screenType))
-        ]) :
-        Row(children: [
-          SideBar(),
-          Expanded(child: Column(children: [
-            headerMenu(context, ref),
-            Expanded(child: getScreen(screenType))
-          ]))
-        ]),
-        ),
-      );
+    return Scaffold(
+      key: ref.read(menuProvider).scaffoldKey,
+      backgroundColor: myTheme.scaffoldBackgroundColor,
+      drawerScrimColor: myTheme.primaryColor,
+      drawer: SideBar(),
+      body: SafeArea(
+        child: Responsive.isMobile(context) == true
+            ? Column(children: [headerMenu(context, ref), Expanded(child: getScreen(screenType))])
+            : Row(children: [
+                SideBar(),
+                Expanded(child: Column(children: [headerMenu(context, ref), Expanded(child: getScreen(screenType))]))
+              ]),
+      ),
+    );
   }
 
-  Widget getScreen(int type){
-    if(type==0) return DashboardScreen();
-    else if(type==1) return ContentScreen();
-    else return Container();
+  Widget getScreen(int type) {
+    if (type == 0)
+      return DashboardScreen();
+    else if (type == 1)
+      return ContentScreen();
+    else
+      return Container();
   }
 
   Widget headerMenu(BuildContext context, WidgetRef ref) {
     return Container(
-        color: Theme.of(context).primaryColor,
+        color: myTheme.primaryColor,
         child: Row(children: [
           if (Responsive.isMobile(context) == true)
             IconButton(
                 iconSize: 32,
-                icon: Icon(Icons.menu, size: 32, color: Theme.of(context).iconTheme.color),
+                icon: Icon(Icons.menu, size: 32, color: myTheme.iconTheme.color),
                 onPressed: () {
-                  ref
-                      .read(menuProvider)
-                      .scaffoldKey
-                      .currentState!
-                      .openDrawer();
-                }
-            ),
-
+                  ref.read(menuProvider).scaffoldKey.currentState!.openDrawer();
+                }),
           Expanded(child: SizedBox(width: 1)),
-
           headerButtons(),
-
           PopupMenuButton(
             icon: Icon(Icons.adaptive.more, color: null),
             enableFeedback: ref.watch(menuProvider).data.isDark,
             offset: Offset(0, 50),
-            itemBuilder: (BuildContext context) =>
-            [
+            itemBuilder: (BuildContext context) => [
               PopupMenuItem(
                   child: ListTile(
-                    leading: Icon(Icons.dark_mode_outlined),
-                    title: Text('Darkmode'),
-                    onTap: () {
-                      ref.read(menuProvider).switchDarkMode();
-                    },
-                  )
-              ),
+                leading: Icon(Icons.dark_mode_outlined),
+                title: Text('Darkmode'),
+                onTap: () {
+                  ref.read(menuProvider).switchDarkMode();
+                },
+              )),
             ],
           )
-        ])
-    );
+        ]));
   }
 
   Widget headerButtons() {
@@ -105,36 +85,32 @@ class MainScreen extends ConsumerWidget {
       itemBuilder: (BuildContext context) => [
         PopupMenuItem(
             child: ListTile(
-              title: Text(ref.read(gdriveProvider).getAccountName()),
-            )
-        ),
+          title: Text(ref.read(gdriveProvider).getAccountName()),
+        )),
         PopupMenuItem(
             child: ListTile(
-              leading: Icon(Icons.login),
-              title: Text('Login'),
-              onTap: () {
-                ref.read(gdriveProvider).loginSilently();
-              },
-            )
-        ),
+          leading: Icon(Icons.login),
+          title: Text('Login'),
+          onTap: () {
+            ref.read(gdriveProvider).loginSilently();
+          },
+        )),
         PopupMenuItem(
             child: ListTile(
-              leading: Icon(Icons.add),
-              title: Text('Other user'),
-              onTap: () {
-                ref.read(gdriveProvider).loginWithGoogle();
-              },
-            )
-        ),
+          leading: Icon(Icons.add),
+          title: Text('Other user'),
+          onTap: () {
+            ref.read(gdriveProvider).loginWithGoogle();
+          },
+        )),
         PopupMenuItem(
             child: ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                ref.read(gdriveProvider).logout();
-              },
-            )
-        ),
+          leading: Icon(Icons.logout),
+          title: Text('Logout'),
+          onTap: () {
+            ref.read(gdriveProvider).logout();
+          },
+        )),
       ],
     );
   }
@@ -159,19 +135,19 @@ class SideBar extends ConsumerWidget {
 
     return Container(
         width: _type == 2 ? 180 : 50,
-        color: Theme.of(context).primaryColor,
+        color: myTheme.primaryColor,
         child: Drawer(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: myTheme.primaryColor,
           child: ListView(
             children: [
-              if(_type != 0)
+              if (_type != 0)
                 ListTile(
                   contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                   onTap: () {
                     ref.read(menuProvider).switchSideMenu();
                   },
-                  leading: Icon(Icons.menu, size: this.IconSize, color: Theme.of(context).iconTheme.color),
-                  tileColor: Theme.of(context).primaryColor,
+                  leading: Icon(Icons.menu, size: this.IconSize, color: myTheme.iconTheme.color),
+                  tileColor: myTheme.primaryColor,
                   title: null,
                 ),
               MyListTile(
@@ -191,8 +167,7 @@ class SideBar extends ConsumerWidget {
               ),
             ],
           ),
-        )
-    );
+        ));
   }
 
   Widget MyListTile({
@@ -200,18 +175,16 @@ class SideBar extends ConsumerWidget {
     required IconData icondata,
     required int screenType,
   }) {
-    Color? col = _selcted == screenType ?
-    null : Theme.of(context).disabledColor;
+    Color? col = _selcted == screenType ? null : myTheme.disabledColor;
     Icon icon = Icon(icondata, size: this.IconSize, color: col);
     Text text = Text(title, style: TextStyle(color: col));
     return ListTile(
       contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       leading: icon,
       title: _type == 2 ? text : null,
-      tileColor: Theme.of(context).primaryColor,
+      tileColor: myTheme.primaryColor,
       onTap: () {
-          this.ref
-              .read(menuProvider).setScreenType(screenType);
+        this.ref.read(menuProvider).setScreenType(screenType);
       },
     );
   }

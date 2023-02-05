@@ -7,19 +7,18 @@ import 'controllers/menu_controller.dart';
 import 'models/menu.dart';
 
 void main() {
-    runApp(ProviderScope(child:MyApp()));
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    bool isDark= ref.watch(menuProvider).data.isDark;
-
+    myTheme = ref.watch(menuProvider).data.isDark ? myDarkTheme : myLightTheme;
     return MaterialApp(
       routes: {},
       debugShowCheckedModeBanner: false,
       title: 'GdriveCMS',
-      theme: isDark ? myDarkTheme : myLightTheme,
+      theme: myTheme,
       home: MainScreen(),
     );
   }

@@ -61,10 +61,10 @@ class ContentScreen extends ConsumerWidget {
       showCheckboxColumn: false,
       columnSpacing: 8,
       minWidth: 100,
-      headingTextStyle: Theme.of(context).textTheme.bodyMedium,
-      dataTextStyle: Theme.of(context).textTheme.bodyMedium,
+      headingTextStyle: myTheme.textTheme.bodyMedium,
+      dataTextStyle: myTheme.textTheme.bodyMedium,
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: myTheme.cardColor,
         borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
       ),
       columns: [
@@ -90,14 +90,14 @@ class ContentScreen extends ConsumerWidget {
         idata = Icons.image;
       else if (m.contains('folder')) idata = Icons.folder;
     }
-    Widget icon = Icon(idata, size: 24, color: Theme.of(context).textTheme.bodyMedium!.color);
+    Widget icon = Icon(idata, size: 24, color: myTheme.textTheme.bodyMedium!.color);
     String sTime = DateFormat('yyyy/MM/dd').format(cont.createdTime!);
 
     return DataRow(
       color: MaterialStateProperty.resolveWith(
         (states) {
           if (states.contains(MaterialState.selected)) {
-            return Theme.of(context).selectedRowColor;
+            return myTheme.selectedRowColor;
           }
         },
       ),
@@ -145,10 +145,10 @@ class ContentScreen extends ConsumerWidget {
       showCheckboxColumn: false,
       columnSpacing: 8,
       minWidth: 100,
-      headingTextStyle: Theme.of(context).textTheme.bodyMedium,
-      dataTextStyle: Theme.of(context).textTheme.bodyMedium,
+      headingTextStyle: myTheme.textTheme.bodyMedium,
+      dataTextStyle: myTheme.textTheme.bodyMedium,
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: myTheme.cardColor,
         borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
       ),
       columns: [
