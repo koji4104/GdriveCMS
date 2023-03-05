@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:data_table_2/data_table_2.dart';
 import 'package:intl/intl.dart';
 import '/constants.dart';
 
 import 'components/storage_capacity.dart';
-import 'gdrive_adapter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '/controllers/menu_controller.dart';
-import '/models/menu.dart';
 import '/models/content.dart';
 import '/controllers/content_controller.dart';
+import '/commons/widgets.dart';
 
 class DashboardScreen extends ConsumerWidget {
   late WidgetRef ref;
@@ -29,6 +27,7 @@ class DashboardScreen extends ConsumerWidget {
         padding: EdgeInsets.all(10),
         child: Column(children: [
           topButtons(),
+          SizedBox(height: 8),
           Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Expanded(flex: 2, child: fileList()),
             SizedBox(width: 10),
@@ -41,9 +40,8 @@ class DashboardScreen extends ConsumerWidget {
 
   Widget topButtons() {
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      IconButton(
+      MyIconButton(
         icon: Icon(Icons.autorenew),
-        iconSize: 24.0,
         onPressed: () async {
           ref.read(gdriveProvider).getFiles();
         },
@@ -65,11 +63,12 @@ class DashboardScreen extends ConsumerWidget {
     return DataTable2(
       columnSpacing: 8,
       minWidth: 400,
+      dataRowHeight: DEF_ROW_HEIGHT,
       headingTextStyle: myTheme.textTheme.bodyMedium,
       dataTextStyle: myTheme.textTheme.bodyMedium,
       decoration: BoxDecoration(
         color: myTheme.cardColor,
-        borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+        borderRadius: DEF_BORDER_RADIUS,
       ),
       columns: [
         DataColumn(label: Text("Name")),
@@ -86,12 +85,12 @@ class DashboardScreen extends ConsumerWidget {
   DataRow getRow(ContentData cont) {
     TextStyle ts = myTheme.textTheme.bodyMedium!;
     Color? col = myTheme.textTheme.bodyMedium!.color;
-    Icon icon = Icon(Icons.text_snippet, size: 30, color: col);
+    Icon icon = Icon(Icons.text_snippet, size: DEF_ROW_ICONSIZE, color: col);
     String sTime = cont.createdTime != null ? DateFormat('yyyy/MM/dd').format(cont.createdTime!) : '';
     if (cont.mimeType != null) {
       if (cont.mimeType!.contains('video'))
-        icon = Icon(Icons.videocam, size: 30, color: col);
-      else if (cont.mimeType!.contains('image')) icon = Icon(Icons.image, size: 30, color: col);
+        icon = Icon(Icons.videocam, size: DEF_ROW_ICONSIZE, color: col);
+      else if (cont.mimeType!.contains('image')) icon = Icon(Icons.image, size: DEF_ROW_ICONSIZE, color: col);
     }
     return DataRow(
       color: MaterialStateProperty.resolveWith((states) {

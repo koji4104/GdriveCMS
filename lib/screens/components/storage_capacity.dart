@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import '/controllers/menu_controller.dart';
-import '/models/menu.dart';
 import '/controllers/content_controller.dart';
 import '/models/content.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '/commons/widgets.dart';
 
 import '../../../constants.dart';
 
@@ -51,7 +50,7 @@ class StorageCapacity extends ConsumerWidget {
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: myTheme.cardColor,
-        borderRadius: const BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
+        borderRadius: DEF_BORDER_RADIUS,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,10 +116,8 @@ class StorageCapacityCard extends ConsumerWidget {
       padding: EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: myTheme.cardColor,
-        border: Border.all(width: 1, color: myTheme.backgroundColor),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(DEFAULT_RADIUS),
-        ),
+        border: Border.all(width: 1, color: myTheme.dividerColor),
+        borderRadius: DEF_BORDER_RADIUS,
       ),
       child: Row(
         children: [
@@ -266,7 +263,7 @@ class ProgressLine extends StatelessWidget {
             height: 5,
             decoration: BoxDecoration(
               color: myTheme.backgroundColor,
-              borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
+              borderRadius: DEF_BORDER_RADIUS,
             ),
           ),
           LayoutBuilder(
@@ -275,7 +272,7 @@ class ProgressLine extends StatelessWidget {
               height: 5,
               decoration: BoxDecoration(
                 color: color,
-                borderRadius: BorderRadius.all(Radius.circular(DEFAULT_RADIUS)),
+                borderRadius: DEF_BORDER_RADIUS,
               ),
             ),
           ),

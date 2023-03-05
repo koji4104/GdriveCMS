@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '/controllers/menu_controller.dart';
-import '/models/menu.dart';
 import '/controllers/content_controller.dart';
 import 'content_screen.dart';
-import '/constants.dart';
+import '/commons/widgets.dart';
 
 class MainScreen extends ConsumerWidget {
   late WidgetRef ref;
@@ -28,10 +27,12 @@ class MainScreen extends ConsumerWidget {
       body: SafeArea(
         child: Responsive.isMobile(context) == true
             ? Column(children: [headerMenu(context, ref), Expanded(child: getScreen(screenType))])
-            : Row(children: [
-                SideBar(),
-                Expanded(child: Column(children: [headerMenu(context, ref), Expanded(child: getScreen(screenType))]))
-              ]),
+            : Row(
+                children: [
+                  SideBar(),
+                  Expanded(child: Column(children: [headerMenu(context, ref), Expanded(child: getScreen(screenType))]))
+                ],
+              ),
       ),
     );
   }
@@ -47,15 +48,17 @@ class MainScreen extends ConsumerWidget {
 
   Widget headerMenu(BuildContext context, WidgetRef ref) {
     return Container(
-        color: myTheme.primaryColor,
-        child: Row(children: [
+      color: myTheme.primaryColor,
+      child: Row(
+        children: [
           if (Responsive.isMobile(context) == true)
             IconButton(
-                iconSize: 32,
-                icon: Icon(Icons.menu, size: 32, color: myTheme.iconTheme.color),
-                onPressed: () {
-                  ref.read(menuProvider).scaffoldKey.currentState!.openDrawer();
-                }),
+              iconSize: 32,
+              icon: Icon(Icons.menu, size: 32, color: myTheme.iconTheme.color),
+              onPressed: () {
+                ref.read(menuProvider).scaffoldKey.currentState!.openDrawer();
+              },
+            ),
           Expanded(child: SizedBox(width: 1)),
           headerButtons(),
           PopupMenuButton(
@@ -64,16 +67,19 @@ class MainScreen extends ConsumerWidget {
             offset: Offset(0, 50),
             itemBuilder: (BuildContext context) => [
               PopupMenuItem(
-                  child: ListTile(
-                leading: Icon(Icons.dark_mode_outlined),
-                title: Text('Darkmode'),
-                onTap: () {
-                  ref.read(menuProvider).switchDarkMode();
-                },
-              )),
+                child: ListTile(
+                  leading: Icon(Icons.dark_mode_outlined),
+                  title: Text('Darkmode'),
+                  onTap: () {
+                    ref.read(menuProvider).switchDarkMode();
+                  },
+                ),
+              ),
             ],
           )
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget headerButtons() {
@@ -134,40 +140,41 @@ class SideBar extends ConsumerWidget {
     ref.watch(menuProvider);
 
     return Container(
-        width: _type == 2 ? 180 : 50,
-        color: myTheme.primaryColor,
-        child: Drawer(
-          backgroundColor: myTheme.primaryColor,
-          child: ListView(
-            children: [
-              if (_type != 0)
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  onTap: () {
-                    ref.read(menuProvider).switchSideMenu();
-                  },
-                  leading: Icon(Icons.menu, size: this.IconSize, color: myTheme.iconTheme.color),
-                  tileColor: myTheme.primaryColor,
-                  title: null,
-                ),
-              MyListTile(
-                title: "Dashboard",
-                icondata: Icons.insert_chart,
-                screenType: 0,
+      width: _type == 2 ? 180 : 50,
+      color: myTheme.primaryColor,
+      child: Drawer(
+        backgroundColor: myTheme.primaryColor,
+        child: ListView(
+          children: [
+            if (_type != 0)
+              ListTile(
+                contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                onTap: () {
+                  ref.read(menuProvider).switchSideMenu();
+                },
+                leading: Icon(Icons.menu, size: this.IconSize, color: myTheme.iconTheme.color),
+                tileColor: myTheme.primaryColor,
+                title: null,
               ),
-              MyListTile(
-                title: "Contents",
-                icondata: Icons.article,
-                screenType: 1,
-              ),
-              MyListTile(
-                title: "Settings",
-                icondata: Icons.settings,
-                screenType: 2,
-              ),
-            ],
-          ),
-        ));
+            MyListTile(
+              title: "Dashboard",
+              icondata: Icons.insert_chart,
+              screenType: 0,
+            ),
+            MyListTile(
+              title: "Contents",
+              icondata: Icons.article,
+              screenType: 1,
+            ),
+            MyListTile(
+              title: "Settings",
+              icondata: Icons.settings,
+              screenType: 2,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget MyListTile({

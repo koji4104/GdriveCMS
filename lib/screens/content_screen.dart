@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:data_table_2/data_table_2.dart';
 import 'package:intl/intl.dart';
 
-import '/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '/controllers/menu_controller.dart';
-import '/models/menu.dart';
 import '/controllers/content_controller.dart';
 import '/models/content.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '/commons/widgets.dart';
+import '/constants.dart';
 
 class ContentScreen extends ConsumerWidget {
   late WidgetRef ref;
@@ -30,6 +29,7 @@ class ContentScreen extends ConsumerWidget {
         child: Column(
           children: [
             topButtons(),
+            SizedBox(height: 8),
             Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Expanded(flex: 2, child: fileList()),
               SizedBox(width: 10),
@@ -42,18 +42,14 @@ class ContentScreen extends ConsumerWidget {
   }
 
   Widget topButtons() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        IconButton(
-          icon: Icon(Icons.autorenew),
-          iconSize: 24.0,
-          onPressed: () async {
-            ref.read(gdriveProvider).getFiles();
-          },
-        ),
-      ],
-    );
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      MyIconButton(
+        icon: Icon(Icons.autorenew),
+        onPressed: () async {
+          ref.read(gdriveProvider).getFiles();
+        },
+      ),
+    ]);
   }
 
   Widget fileList() {
@@ -61,11 +57,12 @@ class ContentScreen extends ConsumerWidget {
       showCheckboxColumn: false,
       columnSpacing: 8,
       minWidth: 100,
+      dataRowHeight: DEF_ROW_HEIGHT,
       headingTextStyle: myTheme.textTheme.bodyMedium,
       dataTextStyle: myTheme.textTheme.bodyMedium,
       decoration: BoxDecoration(
         color: myTheme.cardColor,
-        borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+        borderRadius: DEF_BORDER_RADIUS,
       ),
       columns: [
         DataColumn(label: Text("Name")),
@@ -90,7 +87,7 @@ class ContentScreen extends ConsumerWidget {
         idata = Icons.image;
       else if (m.contains('folder')) idata = Icons.folder;
     }
-    Widget icon = Icon(idata, size: 24, color: myTheme.textTheme.bodyMedium!.color);
+    Widget icon = Icon(idata, size: DEF_ROW_ICONSIZE, color: myTheme.textTheme.bodyMedium!.color);
     String sTime = DateFormat('yyyy/MM/dd').format(cont.createdTime!);
 
     return DataRow(
@@ -118,8 +115,9 @@ class ContentScreen extends ConsumerWidget {
         DataCell(Text(sTime)),
         DataCell(Text((cont.bytes / 1024).toInt().toString() + ' KB')),
         DataCell(
-          MyIconButton(
-            icon: Icon(Icons.play_circle_fill, color: null, size: 24),
+          IconButton(
+            icon: Icon(Icons.play_circle_fill),
+            iconSize: DEF_ROW_ICONSIZE,
             onPressed: () {
               if (cont.webViewLink != null) launchUrl(Uri.parse(cont.webViewLink!));
             },
@@ -145,36 +143,18 @@ class ContentScreen extends ConsumerWidget {
       showCheckboxColumn: false,
       columnSpacing: 8,
       minWidth: 100,
+      dataRowHeight: DEF_ROW_HEIGHT,
       headingTextStyle: myTheme.textTheme.bodyMedium,
       dataTextStyle: myTheme.textTheme.bodyMedium,
       decoration: BoxDecoration(
         color: myTheme.cardColor,
-        borderRadius: BorderRadius.circular(DEFAULT_RADIUS),
+        borderRadius: DEF_BORDER_RADIUS,
       ),
       columns: [
         DataColumn(label: Text("Key")),
         DataColumn(label: Text("Value")),
       ],
       rows: rows,
-    );
-  }
-
-  Widget MyIconButton(
-      {required Icon icon,
-      required void Function()? onPressed,
-      double? left,
-      double? top,
-      double? right,
-      double? bottom,
-      double? iconSize}) {
-    Color fgcol = Colors.white;
-    Color bgcol = Colors.black54;
-    if (iconSize == null) iconSize = 24.0;
-    return IconButton(
-      icon: icon,
-      color: fgcol,
-      iconSize: iconSize,
-      onPressed: onPressed,
     );
   }
 }

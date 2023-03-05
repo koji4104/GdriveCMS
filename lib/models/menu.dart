@@ -10,5 +10,4 @@ class MenuData {
 
   /// 0=Dashboard, 1=Content
   int screenType = 0;
-
 }

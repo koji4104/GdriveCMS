@@ -1,10 +1,9 @@
 import '/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'screens/main_screen.dart';
 import 'controllers/menu_controller.dart';
-import 'models/menu.dart';
+import '/commons/widgets.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
