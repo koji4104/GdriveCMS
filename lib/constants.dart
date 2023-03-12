@@ -6,5 +6,5 @@ const bgColor = Color(0xFF212332);
 
 const defaultPadding = 16.0;
 
-const DEF_ROW_HEIGHT = 32.0;
+const DEF_ROW_HEIGHT = 40.0;
 const DEF_ROW_ICONSIZE = 24.0;

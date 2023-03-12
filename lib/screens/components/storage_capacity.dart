@@ -6,7 +6,7 @@ import '/models/content.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '/commons/widgets.dart';
 
-import '../../../constants.dart';
+import '/constants.dart';
 
 class StorageCapacity extends ConsumerWidget {
   StorageCapacity({
@@ -71,7 +71,7 @@ class StorageCapacity extends ConsumerWidget {
             numOfFiles: videoCount,
           ),
           StorageCapacityCard(
-            iconData: Icons.image_outlined,
+            iconData: Icons.image,
             title: "Images",
             bytes: imageBytes,
             numOfFiles: imageCount,

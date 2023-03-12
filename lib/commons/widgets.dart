@@ -22,7 +22,7 @@ ThemeData myDarkTheme = ThemeData.dark().copyWith(
   cardColor: Color(0xFF444444),
   primaryColor: Color(0xFF444444),
   primaryColorDark: Color(0xFF333333),
-  dividerColor: Color(0xFF777777),
+  dividerColor: Color(0xFF000000),
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Color(0xFFffffff))),
   ),

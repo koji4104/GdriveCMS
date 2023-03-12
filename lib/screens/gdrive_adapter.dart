@@ -57,8 +57,8 @@ class GoogleDriveAdapter {
   String gcmsFolderName = 'gcms';
   String? gcmsFolderId;
 
-  String contentsFolderName = 'contents';
-  String? contentsFolderId;
+  String itemsFolderName = 'items';
+  String? itemsFolderId;
 
   String dataFolderName = 'data';
   String? dataFolderId;
@@ -170,17 +170,17 @@ class GoogleDriveAdapter {
           }
         }
       }
-      if (gcmsFolderId != null && contentsFolderId == null) {
+      if (gcmsFolderId != null && itemsFolderId == null) {
         String q = "mimeType='application/vnd.google-apps.folder'";
-        q += " and name='${contentsFolderName}'";
+        q += " and name='${itemsFolderName}'";
         q += " and trashed=False";
         q += " and '${gcmsFolderId}' in parents";
         ga.FileList folders = await drive.files.list(q: q);
 
         if (folders.files != null) {
           for (ga.File f in folders.files!) {
-            if (f.name == contentsFolderName) {
-              contentsFolderId = f.id ?? null;
+            if (f.name == itemsFolderName) {
+              itemsFolderId = f.id ?? null;
             }
           }
         }
@@ -216,14 +216,14 @@ class GoogleDriveAdapter {
     var drive = ga.DriveApi(client);
     try {
       // top folder id
-      if (contentsFolderId == null) {
+      if (itemsFolderId == null) {
         await getGcmsFolderId();
       }
-      if (contentsFolderId != null) {
+      if (itemsFolderId != null) {
         // File list
         String q = "";
         q += "trashed=False";
-        q += " and '${contentsFolderId}' in parents";
+        q += " and '${itemsFolderId}' in parents";
         gfilelist = await drive.files.list(
           q: q,
           $fields: '*',
